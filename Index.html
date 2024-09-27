@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Halloween AR Hunt</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body>
+    <!-- Setup AR scene -->
+    <a-scene embedded arjs>
+      <!-- Camera -->
+      <a-marker preset="hiro">
+        <a-entity camera></a-entity>
+      </a-marker>
+      
+      <!-- Halloween objects (example: pumpkin) -->
+      <a-box position="0 0.5 -2" rotation="0 45 0" scale="0.5 0.5 0.5" color="orange"
+             event-set__click="_event: click; scale: 1 1 1"
+             id="pumpkin">
+      </a-box>
+      
+      <!-- Additional Halloween objects -->
+      <a-sphere position="1 0.5 -2" radius="0.3" color="purple"
+                event-set__click="_event: click; scale: 1.5 1.5 1.5"
+                id="ghost">
+      </a-sphere>
+      
+      <a-cylinder position="-1 0.5 -2" radius="0.2" height="0.5" color="black"
+                  event-set__click="_event: click; scale: 1.5 1.5 1.5"
+                  id="witch_hat">
+      </a-cylinder>
+
+      <a-entity gltf-model="url(https://cdn.aframe.io/test-models/models/Tree/scene.gltf)"
+                position="0 0 -4" scale="0.02 0.02 0.02"
+                event-set__click="_event: click; scale: 0.04 0.04 0.04"
+                id="spooky_tree">
+      </a-entity>
+
+      <!-- Display clues when object is found -->
+      <a-entity id="clueText" position="0 1.5 -2" text="value: Leta efter föremålen!;"></a-entity>
+    </a-scene>
+
+    <script>
+      let clues = [];
+      let totalObjects = 10;  // Adjust this if you add more objects
+      let foundObjects = 0;
+      const correctPassword = "spökrunda";
+
+      // Array of all object IDs
+      const objects = ['pumpkin', 'ghost', 'witch_hat', 'spooky_tree'];
+
+      // Iterate over each object to make it clickable
+      objects.forEach(objectId => {
+        document.getElementById(objectId).addEventListener('click', function() {
+          if (!clues.includes(objectId)) {
+            clues.push(objectId);
+            foundObjects += 1;
+            document.getElementById('clueText').setAttribute('text', `value: Du hittade ${objectId}!`);
+          }
+          if (foundObjects === totalObjects) {
+            let inputPassword = prompt('Du har hittat alla föremål! Ange lösenordet för att slutföra spelet.');
+            if (inputPassword === correctPassword) {
+              alert('Grattis! Du har slutfört spökrundan.');
+            } else {
+              alert('Fel lösenord, försök igen!');
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
